@@ -1,0 +1,28 @@
+[project]
+name = "hello-robot-stretch4-tray"
+# Versioning follow CalVer (YYYY.MM.DD) for PEP 440 compliance
+version = "2026.07.01"
+description = "Ubuntu system tray for displaying battery level and providing a system tray menu for launching Stretch tools or help resources."
+readme = "README.md"
+authors = [
+    { name = "Hello Robot Inc.", email = "support@hello-robot.com" },
+]
+requires-python = ">=3.10"
+dependencies = [
+    "pystray",
+    "requests>=2.32.5",
+    "fastapi>=0.126.0",
+    "uvicorn[standard]>=0.38.0",
+    "PyYAML",
+]
+
+[build-system]
+requires = ["setuptools>=61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["stretch4_tray"]
+
+
+[project.scripts]
+stretch_tray = "stretch4_tray.cli:main"

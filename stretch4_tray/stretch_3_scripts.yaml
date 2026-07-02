@@ -1,0 +1,128 @@
+- key: documentation
+  icon: ''
+  name: Documentation
+  command: python3 -m stretch4_tray.open_documentation
+  open_terminal: false
+  description: Open the Stretch docs website in your web browser.
+  separator_after: false
+  category: docs
+  visible_in_tray: true
+- key: stretch_tray_web
+  icon: ''
+  name: Commands Directory GUI
+  command: python3 -m stretch_tray_web.web_server
+  open_terminal: true
+  description: Launch the web interface for browsing and executing Stretch commands.
+  separator_after: true
+  category: docs
+  visible_in_tray: true
+- key: home
+  icon: ''
+  name: Home Stretch
+  command: stretch_robot_home.py
+  open_terminal: true
+  description: Calibrate Stretch's joints and move to home position.
+  separator_after: false
+  category: robot
+  visible_in_tray: true
+- key: stow
+  icon: ''
+  name: Stow Stretch
+  command: stretch_robot_stow.py
+  open_terminal: true
+  description: Stow Stretch's arm, wrist and gripper.
+  separator_after: true
+  category: robot
+  visible_in_tray: true
+- key: free
+  icon: ''
+  name: Free Processes
+  command: stretch_free_robot_process.py
+  open_terminal: true
+  description: Free robot processes and release device locks
+  separator_after: true
+  category: diagnosics
+  visible_in_tray: true
+- key: start_web_teleop
+  icon: ''
+  name: 'Web Teleop: Launch'
+  command: bash ~/ament_ws/src/stretch_web_teleop/launch_interface.sh
+  open_terminal: true
+  description: Launch the web teleop interface.
+  separator_after: false
+  category: teleop
+  visible_in_tray: true
+- key: stop_web_teleop
+  icon: ''
+  name: 'Web Teleop: Stop'
+  command: bash ~/ament_ws/src/stretch_web_teleop/stop_interface.sh
+  open_terminal: true
+  description: Stop the web teleop interface.
+  separator_after: false
+  category: teleop
+  visible_in_tray: false
+- key: ros2_topic_list
+  icon: ''
+  name: 'ROS2: Topic List'
+  command: ros2 topic list
+  open_terminal: true
+  description: List active ROS2 topics
+  separator_after: false
+  category: ros2
+  visible_in_tray: false
+- key: gamepad_teleop
+  icon: ''
+  name: 'Gamepad Teleop: Launch'
+  command: stretch_gamepad_teleop.py
+  open_terminal: true
+  description: Launch gamepad teleop.
+  separator_after: true
+  category: teleop
+  visible_in_tray: true
+- key: stretch_driver
+  icon: ''
+  name: 'stretch_driver: Launch'
+  command: ros2 launch stretch_core stretch_driver.launch.py do_broadcast_odom_tf:=True
+  open_terminal: true
+  description: Launch the ROS2 stretch_driver launch file.
+  separator_after: false
+  category: ros2
+  visible_in_tray: false
+- key: nav2_offline_map
+  icon: ''
+  name: 'nav2: Offline Map'
+  command: ros2 launch stretch_nav2 offline_mapping.launch.py use_rviz:=true
+  open_terminal: true
+  description: Launch the offline mapping ROS2 launch file.
+  separator_after: false
+  category: ros2
+  visible_in_tray: false
+- key: nav2_save_map
+  icon: ''
+  name: 'nav2: Save Map'
+  command: ros2 run nav2_map_server map_saver_cli -f ${HELLO_FLEET_PATH}/maps/stretch_map
+  open_terminal: true
+  description: Save the current map. This will save it as 'stretch_map.yaml' in the
+    maps stretch_user directory.
+  separator_after: false
+  category: ros2
+  visible_in_tray: false
+- key: nav2_run_map
+  icon: ''
+  name: 'nav2: Run stretch_map.yaml Map'
+  command: ros2 launch stretch_nav2 navigation.launch.py map:=${HELLO_FLEET_PATH}/maps/stretch_map.yaml
+    use_rviz:=true
+  open_terminal: true
+  description: Run nav2 with the stretch_map.yaml file.
+  separator_after: false
+  category: ros2
+  visible_in_tray: false
+- key: stretch_system_check
+  icon: ''
+  name: Stretch System Check
+  command: stretch_system_check.py
+  open_terminal: true
+  description: Run a system wide diagnositic check.
+  separator_after: true
+  category: diagnosis
+  visible_in_tray: true

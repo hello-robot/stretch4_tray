@@ -1,0 +1,333 @@
+- key: documentation
+  icon: ''
+  name: Documentation
+  command: python3 -m stretch4_tray.scripts.open_documentation
+  open_terminal: false
+  description: Open the Stretch docs website in your web browser.
+  separator_after: false
+  category: docs
+  visible_in_tray: true
+- key: home
+  icon: ''
+  name: Home Stretch
+  command: stretch_robot_home
+  open_terminal: true
+  description: Calibrate Stretch's joints and move to home position.
+  separator_after: false
+  category: robot
+  visible_in_tray: true
+- key: stow
+  icon: ''
+  name: Stow Stretch
+  command: stretch_robot_stow
+  open_terminal: true
+  description: Stow Stretch's arm, wrist and gripper.
+  separator_after: true
+  category: robot
+  visible_in_tray: true
+- key: zenoh_router
+  icon: ''
+  name: 'Zenoh Router: Launch'
+  command: ros2 run rmw_zenoh_cpp rmw_zenohd
+  open_terminal: true
+  description: Launch the Zenoh router.
+  separator_after: false
+  category: ros2
+  visible_in_tray: true
+- key: colcon_build
+  icon: ''
+  name: 'Colcon: Build'
+  command: source ./stretch4_tray/scripts/colcon_build_only.sh
+  open_terminal: true
+  description: Run colcon build --symlink-install.
+  separator_after: true
+  category: ros2_build
+  visible_in_tray: true
+- key: colcon_clean_build
+  icon: ''
+  name: 'Colcon: Clean & Build'
+  command: source ./stretch4_tray/scripts/colcon_clean_build.sh
+  open_terminal: true
+  description: Remove build and install directories and run colcon build --symlink-install.
+  separator_after: false
+  category: ros2_build
+  visible_in_tray: false
+- key: gamepad_teleop
+  icon: ''
+  name: 'Gamepad Teleop: Launch'
+  command: stretch_gamepad_teleop
+  open_terminal: true
+  description: Launch gamepad teleop.
+  separator_after: true
+  category: teleop
+  visible_in_tray: true
+- key: start_web_teleop
+  icon: ''
+  name: 'Web Teleop: Launch'
+  command: bash ~/ament_ws/src/stretch4_web_teleop/launch_interface.sh
+  open_terminal: true
+  description: Launch the web teleop interface.
+  separator_after: false
+  category: teleop
+  visible_in_tray: true
+- key: stop_web_teleop
+  icon: ''
+  name: 'Web Teleop: Stop'
+  command: bash ~/ament_ws/src/stretch4_web_teleop/stop_interface.sh
+  open_terminal: true
+  description: Stop the web teleop interface.
+  separator_after: false
+  category: teleop
+  visible_in_tray: false
+- key: all_sensors_gamepad_ros
+  icon: ''
+  name: Launch Sensors with Gamepad
+  command: ./stretch4_tray/scripts/all_sensors_and_gamepad.sh
+  open_terminal: true
+  description: Launch the 3D Lidars, RGB cameras and gripper cameras with gamepad
+    teleop and Stretch Body Server.
+  separator_after: true
+  category: ros2_launch
+  visible_in_tray: true
+- key: ros2_topic_list
+  icon: ''
+  name: 'ROS2: Topic List'
+  command: ros2 topic list
+  open_terminal: true
+  description: List active ROS2 topics
+  separator_after: false
+  category: ros2
+  visible_in_tray: false
+- key: stretch_driver
+  icon: ''
+  name: 'stretch_driver: Launch'
+  command: ros2 launch stretch_core stretch_driver.launch.py broadcast_odom_tf:=True
+  open_terminal: true
+  description: Launch the ROS2 stretch_driver launch file.
+  separator_after: false
+  category: ros2_launch
+  visible_in_tray: false
+- key: head_cameras
+  icon: ''
+  name: 'Cameras: Launch'
+  command: ros2 launch stretch_core luxonis.launch.py use_center:=true
+  open_terminal: true
+  description: Launch the ROS2 head cameras launch file.
+  separator_after: false
+  category: ros2_launch
+  visible_in_tray: false
+- key: nav2_offline_map
+  icon: ''
+  name: 'nav2: Offline Map'
+  command: ros2 launch stretch_nav2 offline_mapping_hesai.launch.py use_rviz:=true
+  open_terminal: true
+  description: Launch the offline mapping ROS2 launch file.
+  separator_after: false
+  category: ros2_nav2
+  visible_in_tray: false
+- key: nav2_save_map
+  icon: ''
+  name: 'nav2: Save Map'
+  command: ros2 run nav2_map_server map_saver_cli -f ${HELLO_FLEET_PATH}/maps/stretch_map
+  open_terminal: true
+  description: Save the current map. This will save it as 'stretch_map.yaml' in the
+    maps stretch_user directory.
+  separator_after: false
+  category: ros2_nav2
+  visible_in_tray: false
+- key: nav2_run_map
+  icon: ''
+  name: 'nav2: Run stretch_map.yaml Map'
+  command: ros2 launch stretch_nav2 navigation_mppi_hesai.launch.py map:=${HELLO_FLEET_PATH}/maps/stretch_map.yaml
+    use_rviz:=true
+  open_terminal: true
+  description: Run nav2 with the stretch_map.yaml file.
+  separator_after: false
+  category: ros2_nav2
+  visible_in_tray: false
+- key: stretch_body_server_start
+  icon: ''
+  name: 'Stretch Body Server: Launch'
+  command: stretch_body_server --launch
+  open_terminal: true
+  description: Run Stretch Body Server.
+  separator_after: false
+  category: stretch_body
+  visible_in_tray: false
+- key: stretch_body_server_restart
+  icon: ''
+  name: 'Stretch Body Server: Restart'
+  command: stretch_body_server --restart
+  open_terminal: true
+  description: Restart Stretch Body Server.
+  separator_after: false
+  category: stretch_body
+  visible_in_tray: true
+- key: stretch_body_server_status
+  icon: ''
+  name: 'Stretch Body Server: Status'
+  command: stretch_body_server --print
+  open_terminal: true
+  description: Get Stretch Body Server status.
+  separator_after: true
+  category: stretch_body
+  visible_in_tray: true
+- key: stretch_body_server_stop
+  icon: ''
+  name: 'Stretch Body Server: Stop'
+  command: stretch_body_server --kill
+  open_terminal: true
+  description: Stop Stretch Body Server.
+  separator_after: false
+  category: stretch_body
+  visible_in_tray: false
+- key: stretch_body_server_daemon_install
+  icon: ''
+  name: 'Stretch Body Server: Start Daemon'
+  command: stretch_body_server --daemon
+  open_terminal: true
+  description: Install the Stretch Body Server linux service.
+  separator_after: false
+  category: stretch_body
+  visible_in_tray: false
+- key: stretch_body_server_daemon_uninstall
+  icon: ''
+  name: 'Stretch Body Server: Uninstall Daemon'
+  command: stretch_body_server --uninstall_daemon
+  open_terminal: true
+  description: Uninstall the Stretch Body Server linux service.
+  separator_after: false
+  category: stretch_body
+  visible_in_tray: false
+- key: stretch_collision_viz
+  icon: ''
+  name: Stretch Collision Vizualization
+  command: stretch_collision_viz
+  open_terminal: true
+  description: Run stretch collision visualization.
+  separator_after: false
+  category: diagnosis
+  visible_in_tray: true
+- key: stretch_status_viz
+  icon: ''
+  name: Stretch Status in Rerun
+  command: stretch_status_viz
+  open_terminal: true
+  description: Run stretch status visualization.
+  separator_after: false
+  category: diagnosis
+  visible_in_tray: true
+- key: stretch_system_check
+  icon: ''
+  name: Stretch System Check
+  command: stretch_system_check
+  open_terminal: true
+  description: Run stretch system check.
+  separator_after: true
+  category: diagnosis
+  visible_in_tray: true
+- key: restart_stretch_tray
+  icon: ''
+  name: Restart Stretch Tray
+  command: stretch_tray --restart
+  open_terminal: false
+  description: Restart stretch tray service.
+  separator_after: true
+  category: stretch_tray
+  visible_in_tray: false
+- key: status_stretch_tray
+  icon: ''
+  name: Status Stretch Tray
+  command: stretch_tray --status
+  open_terminal: true
+  description: Status of stretch tray service.
+  separator_after: true
+  category: stretch_tray
+  visible_in_tray: false
+- key: stop_stretch_tray
+  icon: ''
+  name: Stop Stretch Tray
+  command: stretch_tray --kill
+  open_terminal: false
+  description: Stop stretch tray service.
+  separator_after: true
+  category: stretch_tray
+  visible_in_tray: false
+- key: camera_show_lrc_opencv
+  icon: ''
+  name: 'Cameras: Left Right Center OpenCV'
+  command: stretch_camera_show --left_right_center --opencv
+  open_terminal: true
+  description: Run left/right/center cameras in opencv.
+  separator_after: false
+  category: cameras
+  visible_in_tray: false
+- key: camera_show_gripper_rerun
+  icon: ''
+  name: 'Cameras: Gripper Rerun'
+  command: stretch_camera_show --gripper --rerun
+  open_terminal: true
+  description: Run gripper cameras in rerun.
+  separator_after: false
+  category: cameras
+  visible_in_tray: false
+
+
+- key: ls_hello_devices
+  icon: ''
+  name: 'List hello devices'
+  command: ls -la /dev/hello-*
+  open_terminal: true
+  description: List hello devices.
+  separator_after: false
+  category: diagnosis
+  visible_in_tray: false
+
+- key: stretch_runstop_trigger
+  icon: ''
+  name: 'Runstop: Trigger'
+  command: stretch_runstop --trigger
+  open_terminal: false
+  description: Trigger the runstop.
+  separator_after: false
+  category: runstop
+  visible_in_tray: false
+- key: stretch_runstop_clear
+  icon: ''
+  name: 'Runstop: Clear'
+  command: stretch_runstop --clear
+  open_terminal: false
+  description: Clear the runstop.
+  separator_after: false
+  category: runstop
+  visible_in_tray: false
+
+- key: udev_reload_trigger
+  icon: ''
+  name: 'Reload udev rules'
+  command: sudo udevadm control --reload-rules && sudo udevadm trigger
+  open_terminal: true
+  description: Reload udev rules and trigger udev.
+  separator_after: false
+  category: diagnosis
+  visible_in_tray: false
+
+- key: dmesg
+  icon: ''
+  name: 'Show dmesg'
+  command: sudo dmesg
+  open_terminal: true
+  description: Print kernel ring buffer.
+  separator_after: false
+  category: diagnosis
+  visible_in_tray: false
+
+- key: open_udev_rules
+  icon: ''
+  name: 'Open udev rules'
+  command: xdg-open /etc/udev/rules.d/
+  open_terminal: false
+  description: Open udev rules directory.
+  separator_after: false
+  category: diagnosis
+  visible_in_tray: false
