@@ -10,8 +10,10 @@ USER_NAME="$(whoami)"
 USER_HOME="$HOME"
 
 
-# Detect Python path (prefer venv if available)
-if [ -f "$REPO_ROOT/.venv/bin/python3" ]; then
+# Detect Python path (prefer environment, then venv, then system)
+if [ -n "$PYTHON_PATH" ]; then
+    echo "Using provided PYTHON_PATH: $PYTHON_PATH"
+elif [ -f "$REPO_ROOT/.venv/bin/python3" ]; then
     PYTHON_PATH="$REPO_ROOT/.venv/bin/python3"
 else
     PYTHON_PATH="$(which python3)"
@@ -48,6 +50,13 @@ generate_service() {
         EXEC_START_CMD="/bin/bash -c \"source $USER_HOME/ament_ws/install/setup.bash && stretch_tray\""
     fi
 
+    # Default WorkingDirectory to REPO_ROOT if it looks like a repo, otherwise HOME
+    WORKING_DIR="$REPO_ROOT"
+    if [ ! -f "$REPO_ROOT/pyproject.toml" ]; then
+        WORKING_DIR="$USER_HOME"
+        echo "Note: $REPO_ROOT does not look like a repository. Setting WorkingDirectory to $WORKING_DIR"
+    fi
+
     cat > "$SCRIPT_DIR/stretch_tray.service" << EOF
 [Unit]
 Description=Stretch Tray System Monitor
@@ -61,7 +70,7 @@ Environment="HELLO_FLEET_PATH=$HELLO_FLEET_PATH"
 Environment="HELLO_FLEET_ID=$HELLO_FLEET_ID"
 Environment="RMW_IMPLEMENTATION=rmw_zenoh_cpp"
 Environment="PATH=$USER_HOME/.local/bin:$USER_HOME/bin:$(dirname $PYTHON_PATH):/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-WorkingDirectory=$REPO_ROOT
+WorkingDirectory=$WORKING_DIR
 ExecStart=$EXEC_START_CMD
 Restart=on-failure
 RestartSec=10

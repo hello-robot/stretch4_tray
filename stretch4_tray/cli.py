@@ -35,39 +35,39 @@ def _get_repo_root(module_file):
         
     # Check module path (useful if installed in editable mode)
     possible_root = os.path.dirname(os.path.dirname(module_file))
-    if os.path.exists(os.path.join(possible_root, "stretch4_tray", "systemd_service.sh")):
+    if os.path.exists(os.path.join(possible_root, "pyproject.toml")) and os.path.exists(os.path.join(possible_root, "stretch4_tray", "systemd_service.sh")):
         return possible_root
         
-    print("Error: Could not find stretch4_tray repository root.")
-    print("Please run this command from within the stretch4_tray repository folder.")
-    sys.exit(1)
+    return None
 
 def install_tray():
     repo_root = _get_repo_root(stretch4_tray.__file__)
-    print(f"Running pip install in {repo_root}...")
-    
-    # Run pip install -e .
-    subprocess.run([sys.executable, "-m", "pip", "install", "-e", repo_root], check=True)
+    if repo_root:
+        print(f"Running pip install in {repo_root}...")
+        # Run pip install -e .
+        subprocess.run([sys.executable, "-m", "pip", "install", "-e", repo_root], check=True)
+    else:
+        print("Not running from repository. Skipping editable pip installation.")
     
     print("Installing stretch_tray systemd service...")
-    script_path = os.path.join(repo_root, "stretch4_tray", "systemd_service.sh")
+    script_path = os.path.join(os.path.dirname(stretch4_tray.__file__), "systemd_service.sh")
     if os.path.exists(script_path):
-        subprocess.run([script_path, "--install"], check=True)
-        subprocess.run([script_path, "--start"], check=True)
+        env = os.environ.copy()
+        env["PYTHON_PATH"] = sys.executable
+        subprocess.run([script_path, "--install"], env=env, check=True)
+        subprocess.run([script_path, "--start"], env=env, check=True)
+    else:
+        print("Error: Could not find systemd_service.sh")
+        sys.exit(1)
     print("Install complete.")
 
 def uninstall_tray():
-    try:
-        repo_root = _get_repo_root(stretch4_tray.__file__)
-    except SystemExit:
-        repo_root = None
-        
     print("Uninstalling stretch_tray systemd service...")
-    
-    if repo_root:
-        script_path = os.path.join(repo_root, "stretch4_tray", "systemd_service.sh")
-        if os.path.exists(script_path):
-            subprocess.run([script_path, "--uninstall"])
+    script_path = os.path.join(os.path.dirname(stretch4_tray.__file__), "systemd_service.sh")
+    if os.path.exists(script_path):
+        env = os.environ.copy()
+        env["PYTHON_PATH"] = sys.executable
+        subprocess.run([script_path, "--uninstall"], env=env)
     else:
         print("Note: Could not locate systemd_service.sh, assuming service is already removed or handling manually.")
         
