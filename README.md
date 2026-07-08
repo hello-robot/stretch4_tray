@@ -6,7 +6,11 @@
 
 ```
 python3 -m pip install -U hello-robot-stretch4-tray
+stretch_tray --install # Installs the linux service to automatically start the tray
+stretch_tray --restart # Immediately start the tray
 ```
+
+If you do not want to use the linux service, you can just run `stretch_tray`.
 
 
 ### Developing

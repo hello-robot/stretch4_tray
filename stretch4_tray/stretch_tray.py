@@ -134,6 +134,12 @@ class StretchSystemTray:
                     return
 
                 command = script_config.command
+                
+                # Resolve relative paths that refer to the package directory
+                if "./stretch4_tray/" in command:
+                    command = command.replace("./stretch4_tray/", str(self.script_dir) + "/")
+                    self.logger.info(f"Resolved relative command path to: {command}")
+
                 visible = script_config.open_terminal
 
                 self.logger.info(f"Executing robot command: {command_key}")
