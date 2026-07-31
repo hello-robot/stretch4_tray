@@ -84,7 +84,7 @@ def kill_tray():
     print("Done killing stretch_tray processes.")
 
 
-def factory_reset():
+def factory_reset(restart_daemon=True):
     """Reset the user configuration file."""
     from datetime import datetime
     import shutil
@@ -129,6 +129,9 @@ def factory_reset():
         from stretch4_tray.stretch_tray import create_user_config_file
         create_user_config_file(default_config, user_config_file)
         print(f"✓ Factory reset complete! Initialized default config at {user_config_file}")
+        
+        if restart_daemon:
+            restart_tray()
     except Exception as e:
         print(f"Error: Failed to create default config: {e}")
 

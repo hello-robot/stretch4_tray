@@ -135,7 +135,7 @@ class StretchSystemTray:
                         "Invoking factory reset..."
                     )
                     from stretch4_tray.cli import factory_reset
-                    factory_reset()
+                    factory_reset(restart_daemon=False)
 
             # Initialize user config if it doesn't exist (or was moved by factory reset)
             if not self.user_config_file.exists():
