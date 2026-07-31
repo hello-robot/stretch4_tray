@@ -146,7 +146,7 @@ def main():
     parser.add_argument("--restart", action="store_true", help="Restart the tray service")
     parser.add_argument("--status", action="store_true", help="Check status and logs")
     parser.add_argument("--kill", action="store_true", help="Kill all tray processes")
-    parser.add_argument("--factory_reset", action="store_true", help="Reset user configuration to defaults")
+    parser.add_argument("--factory-reset", "--factory_reset", action="store_true", dest="factory_reset", help="Reset user configuration to defaults")
     parser.add_argument("--help", action="store_true", help="Show this help message")
 
     # If user provides flags, handle them and exit
