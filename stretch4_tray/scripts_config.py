@@ -31,7 +31,12 @@ class ScriptsConfig:
         with open(config_file, 'r') as f:
             configs = yaml.safe_load(f)
 
-            return {config['key']: ScriptsConfig(**config) for config in configs}
+            if isinstance(configs, list):
+                script_configs = [
+                    config for config in configs
+                    if isinstance(config, dict) and 'key' in config
+                ]
+                return {config['key']: ScriptsConfig(**config) for config in script_configs}
 
         raise Exception(f"Failed to load scripts config from {config_file}")
 

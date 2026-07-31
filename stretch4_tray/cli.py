@@ -86,6 +86,8 @@ def kill_tray():
 
 def factory_reset():
     """Reset the user configuration file."""
+    from datetime import datetime
+    import shutil
     from stretch4_tray.get_stretch_version import StretchVersion, get_stretch_version
     stretch_version = get_stretch_version()
     
@@ -104,13 +106,31 @@ def factory_reset():
     
     if user_config_file.exists():
         try:
-            os.remove(user_config_file)
-            print(f"✓ Factory reset complete! Removed {user_config_file}")
-            print("The default configuration will be recreated on next run.")
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            backup_file = user_config_file.with_name(f"stretch_tray.yaml.bak_{timestamp}")
+            shutil.move(str(user_config_file), str(backup_file))
+            print(f"✓ Backed up old config {user_config_file} to {backup_file}")
         except Exception as e:
-            print(f"Error: Failed to remove user config: {e}")
+            print(f"Error: Failed to backup user config: {e}")
+            return
     else:
-        print("No user configuration found to reset.")
+        print("No existing user configuration found.")
+
+    # Recreate config with injected version
+    try:
+        script_dir = Path(__file__).parent
+        if stretch_version == StretchVersion.stretch_4:
+            default_config = script_dir / "stretch_4_scripts.yaml"
+        elif stretch_version == StretchVersion.stretch_3:
+            default_config = script_dir / "stretch_3_scripts.yaml"
+        else:
+            raise NotImplementedError(f"Unsupported stretch version: {stretch_version}")
+
+        from stretch4_tray.stretch_tray import create_user_config_file
+        create_user_config_file(default_config, user_config_file)
+        print(f"✓ Factory reset complete! Initialized default config at {user_config_file}")
+    except Exception as e:
+        print(f"Error: Failed to create default config: {e}")
 
 
 def main():
