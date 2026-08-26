@@ -331,3 +331,13 @@
   separator_after: false
   category: diagnosis
   visible_in_tray: false
+
+- key: stretch_wifi_connect
+  icon: ''
+  name: 'Connect To WiFi'
+  command: stretch_wifi_connect
+  open_terminal: false
+  description: Connect to WiFi using the center camera and your phone.
+  separator_after: false
+  category: diagnosis
+  visible_in_tray: false

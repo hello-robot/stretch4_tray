@@ -21,12 +21,14 @@ requires = ["setuptools>=61.0.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["stretch4_tray"]
+packages = ["stretch4_tray", "stretch4_tray.scripts"]
 include-package-data = true
 
 [tool.setuptools.package-data]
-stretch4_tray = ["*.sh", "*.yaml", "icons/*", "scripts/*"]
+stretch4_tray = ["*.sh", "*.yaml", "icons/*", "media/*"]
+"stretch4_tray.scripts" = ["*.sh"]
 
 
 [project.scripts]
 stretch_tray = "stretch4_tray.cli:main"
+stretch_wifi_connect = "stretch4_tray.scripts.stretch_wifi_connect:main"

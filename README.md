@@ -69,3 +69,21 @@ To edit the scripts list that shows up in both the system tray and the GUI, plea
 2. Add or modify commands to match the [ScriptsConfig data model](stretch4_tray/scripts_config.py) schema. 
     - Please reference the docstrings in [ScriptsConfig](stretch4_tray/scripts_config.py) for details on each field.
 3. Restart the tray: `stretch_tray --restart`
+
+## Connecting to Wi-Fi with a QR code
+
+`stretch_wifi_connect` joins a Wi-Fi network by scanning its QR code with the robot's center camera:
+
+```bash
+stretch_wifi_connect
+```
+
+Hold up a phone showing a standard Wi-Fi QR code (iOS: *Settings > Wi-Fi > the network > Share Password*, Android:
+*Settings > Network & internet > the network > Share*). The robot chimes once the camera is live, outlines the code
+when it reads it, hands the credentials to `nmcli`, and then plays a success or failure sound. Press `q` or close the
+preview window to quit.
+
+This requires the robot's camera node to be running, since the frames come from the center camera's ROS 2 topic.
+
+To run it automatically at login, add [`stretch4_tray/scripts/run_wifi_connect.sh`](stretch4_tray/scripts/run_wifi_connect.sh)
+as an Ubuntu Startup Application.
