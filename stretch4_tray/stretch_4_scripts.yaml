@@ -4,7 +4,7 @@
   command: python3 -m stretch4_tray.scripts.open_documentation
   open_terminal: false
   description: Open the Stretch docs website in your web browser.
-  separator_after: false
+  separator_after: true
   category: docs
   visible_in_tray: true
 - key: home
@@ -33,41 +33,23 @@
   description: Launch the Zenoh router.
   separator_after: false
   category: ros2
-  visible_in_tray: true
-- key: colcon_build
-  icon: ''
-  name: 'Colcon: Build'
-  command: source ./stretch4_tray/scripts/colcon_build_only.sh
-  open_terminal: true
-  description: Run colcon build --symlink-install.
-  separator_after: true
-  category: ros2_build
-  visible_in_tray: true
-- key: colcon_clean_build
-  icon: ''
-  name: 'Colcon: Clean & Build'
-  command: source ./stretch4_tray/scripts/colcon_clean_build.sh
-  open_terminal: true
-  description: Remove build and install directories and run colcon build --symlink-install.
-  separator_after: false
-  category: ros2_build
   visible_in_tray: false
 - key: gamepad_teleop
   icon: ''
-  name: 'Gamepad Teleop: Launch'
+  name: 'Gamepad Teleop'
   command: stretch_gamepad_teleop
   open_terminal: true
   description: Launch gamepad teleop.
-  separator_after: true
+  separator_after: false
   category: teleop
   visible_in_tray: true
 - key: start_web_teleop
   icon: ''
-  name: 'Web Teleop: Launch'
+  name: 'Web Teleop'
   command: bash ~/ament_ws/src/stretch4_web_teleop/launch_interface.sh
   open_terminal: true
   description: Launch the web teleop interface.
-  separator_after: false
+  separator_after: true
   category: teleop
   visible_in_tray: true
 - key: stop_web_teleop
@@ -79,13 +61,57 @@
   separator_after: false
   category: teleop
   visible_in_tray: false
+- key: camera_show_lrc
+  icon: ''
+  name: 'Show Head Cameras'
+  command: stretch_camera_show --left_right_center --rerun
+  open_terminal: true
+  description: Run left/right/center cameras in rerun.
+  separator_after: false
+  category: sensors
+  visible_in_tray: true
+- key: camera_show_gripper
+  icon: ''
+  name: 'Show Gripper Camera'
+  command: stretch_camera_show --gripper --rerun
+  open_terminal: true
+  description: Run gripper cameras in rerun.
+  separator_after: false
+  category: sensors
+  visible_in_tray: true
+- key: lidars
+  icon: ''
+  name: 'Show Lidars'
+  command: stretch_lidar_show
+  open_terminal: true
+  description: Show lidars in rerun.
+  separator_after: false
+  category: sensors
+  visible_in_tray: true
+- key: line_sensors
+  icon: ''
+  name: 'Show Line Sensors'
+  command: 'XDG_SESSION_TYPE=x11 stretch_line_sensor_viz_3d'
+  open_terminal: true
+  description: Show line sensors.
+  separator_after: false
+  category: sensors
+  visible_in_tray: true
+- key: imu
+  icon: ''
+  name: 'Show IMU'
+  command: 'XDG_SESSION_TYPE=x11 REx_imu_viz --base'
+  open_terminal: true
+  description: Show imu.
+  separator_after: false
+  category: sensors
+  visible_in_tray: false
 - key: all_sensors_gamepad_ros
   icon: ''
-  name: Launch Sensors with Gamepad
-  command: ./stretch4_tray/scripts/all_sensors_and_gamepad.sh
+  name: 'ROS2 Launch Driver and Sensors'
+  command: ./stretch4_tray/scripts/ros2_driver_sensors.sh
   open_terminal: true
-  description: Launch the 3D Lidars, RGB cameras and gripper cameras with gamepad
-    teleop and Stretch Body Server.
+  description: ROS2 launch the 3D Lidars, RGB cameras and gripper cameras with Stretch Driver.
   separator_after: true
   category: ros2_launch
   visible_in_tray: true
@@ -145,6 +171,35 @@
   separator_after: false
   category: ros2_nav2
   visible_in_tray: false
+
+- key: stretch_collision_viz
+  icon: ''
+  name: Collision Vizualization
+  command: stretch_collision_viz
+  open_terminal: true
+  description: Run stretch collision visualization.
+  separator_after: false
+  category: diagnosis
+  visible_in_tray: true
+- key: stretch_status_viz
+  icon: ''
+  name: Joint Status
+  command: stretch_status
+  open_terminal: true
+  description: Run stretch_status to see joint positions and server status.
+  separator_after: true
+  category: diagnosis
+  visible_in_tray: true
+
+- key: stretch_system_check
+  icon: ''
+  name: Stretch System Check
+  command: stretch_system_check
+  open_terminal: true
+  description: Run stretch system check.
+  separator_after: false
+  category: diagnosis
+  visible_in_tray: true
 - key: stretch_body_server_start
   icon: ''
   name: 'Stretch Body Server: Launch'
@@ -165,11 +220,11 @@
   visible_in_tray: true
 - key: stretch_body_server_status
   icon: ''
-  name: 'Stretch Body Server: Status'
+  name: 'Stretch Body Server: Logs'
   command: stretch_body_server --print
   open_terminal: true
   description: Get Stretch Body Server status.
-  separator_after: true
+  separator_after: false
   category: stretch_body
   visible_in_tray: true
 - key: stretch_body_server_stop
@@ -199,33 +254,24 @@
   separator_after: false
   category: stretch_body
   visible_in_tray: false
-- key: stretch_collision_viz
+- key: colcon_build
   icon: ''
-  name: Stretch Collision Vizualization
-  command: stretch_collision_viz
+  name: 'Colcon: Build'
+  command: source ./stretch4_tray/scripts/colcon_build_only.sh
   open_terminal: true
-  description: Run stretch collision visualization.
-  separator_after: false
-  category: diagnosis
-  visible_in_tray: true
-- key: stretch_status_viz
-  icon: ''
-  name: Stretch Status in Rerun
-  command: stretch_status_viz
-  open_terminal: true
-  description: Run stretch status visualization.
-  separator_after: false
-  category: diagnosis
-  visible_in_tray: true
-- key: stretch_system_check
-  icon: ''
-  name: Stretch System Check
-  command: stretch_system_check
-  open_terminal: true
-  description: Run stretch system check.
+  description: Run colcon build --symlink-install.
   separator_after: true
-  category: diagnosis
+  category: ros2_build
   visible_in_tray: true
+- key: colcon_clean_build
+  icon: ''
+  name: 'Colcon: Clean & Build'
+  command: source ./stretch4_tray/scripts/colcon_clean_build.sh
+  open_terminal: true
+  description: Remove build and install directories and run colcon build --symlink-install.
+  separator_after: false
+  category: ros2_build
+  visible_in_tray: false
 - key: restart_stretch_tray
   icon: ''
   name: Restart Stretch Tray
@@ -253,24 +299,7 @@
   separator_after: true
   category: stretch_tray
   visible_in_tray: false
-- key: camera_show_lrc_opencv
-  icon: ''
-  name: 'Cameras: Left Right Center OpenCV'
-  command: stretch_camera_show --left_right_center --opencv
-  open_terminal: true
-  description: Run left/right/center cameras in opencv.
-  separator_after: false
-  category: cameras
-  visible_in_tray: false
-- key: camera_show_gripper_rerun
-  icon: ''
-  name: 'Cameras: Gripper Rerun'
-  command: stretch_camera_show --gripper --rerun
-  open_terminal: true
-  description: Run gripper cameras in rerun.
-  separator_after: false
-  category: cameras
-  visible_in_tray: false
+
 
 
 - key: ls_hello_devices
