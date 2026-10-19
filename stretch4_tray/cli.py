@@ -2,7 +2,8 @@ import subprocess
 import os
 import sys
 from pathlib import Path
-import stretch4_tray
+
+PACKAGE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def restart_service(service_name):
     result = subprocess.run(["systemctl", "--user", "is-active", "--quiet", service_name])
@@ -27,21 +28,21 @@ def status_tray():
     except KeyboardInterrupt:
         pass
 
-def _get_repo_root(module_file):
+def _get_repo_root(package_dir):
     # Check current working directory first (useful if installed normally but run from repo)
     cwd = os.getcwd()
     if os.path.exists(os.path.join(cwd, "pyproject.toml")) and os.path.exists(os.path.join(cwd, "stretch4_tray", "systemd_service.sh")):
         return cwd
         
     # Check module path (useful if installed in editable mode)
-    possible_root = os.path.dirname(os.path.dirname(module_file))
+    possible_root = os.path.dirname(package_dir)
     if os.path.exists(os.path.join(possible_root, "pyproject.toml")) and os.path.exists(os.path.join(possible_root, "stretch4_tray", "systemd_service.sh")):
         return possible_root
         
     return None
 
 def install_tray():
-    repo_root = _get_repo_root(stretch4_tray.__file__)
+    repo_root = _get_repo_root(PACKAGE_DIR)
     if repo_root:
         print(f"Running pip install in {repo_root}...")
         # Run pip install -e .
@@ -50,7 +51,7 @@ def install_tray():
         print("Not running from repository. Skipping editable pip installation.")
     
     print("Installing stretch_tray systemd service...")
-    script_path = os.path.join(os.path.dirname(stretch4_tray.__file__), "systemd_service.sh")
+    script_path = os.path.join(PACKAGE_DIR, "systemd_service.sh")
     if os.path.exists(script_path):
         env = os.environ.copy()
         env["PYTHON_PATH"] = sys.executable
@@ -63,7 +64,7 @@ def install_tray():
 
 def uninstall_tray():
     print("Uninstalling stretch_tray systemd service...")
-    script_path = os.path.join(os.path.dirname(stretch4_tray.__file__), "systemd_service.sh")
+    script_path = os.path.join(PACKAGE_DIR, "systemd_service.sh")
     if os.path.exists(script_path):
         env = os.environ.copy()
         env["PYTHON_PATH"] = sys.executable
