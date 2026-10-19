@@ -8,6 +8,7 @@ import logging
 from datetime import datetime
 from pathlib import Path
 
+import yaml
 import pystray
 from pystray import MenuItem as item
 from PIL import Image
@@ -17,6 +18,63 @@ from stretch4_tray.get_stretch_version import StretchVersion, get_stretch_versio
 from stretch4_tray.visible_shell import ExecutionResult, VisibleShell
 from stretch4_tray.stretch_tray_logger import create_stretch_tray_logger
 from stretch4_tray.scripts_config import ScriptsConfig
+
+
+def get_package_version() -> str:
+    """Get the CalVer version of the package."""
+    try:
+        from importlib.metadata import version
+        return version("hello-robot-stretch4-tray")
+    except Exception:
+        pass
+    try:
+        pyproject_path = Path(__file__).parent.parent / "pyproject.toml"
+        if pyproject_path.exists():
+            import re
+            content = pyproject_path.read_text()
+            match = re.search(r'version\s*=\s*["\']([^"\']+)["\']', content)
+            if match:
+                return match.group(1)
+    except Exception:
+        pass
+    return "0.0.0"
+
+
+def create_user_config_file(default_config: Path, target_user_config: Path) -> None:
+    """Create a user configuration file from default_config with CalVer version injected at the top."""
+    pkg_version = get_package_version()
+    content = default_config.read_text()
+    version_header = f"- version: '{pkg_version}'\n"
+    target_user_config.parent.mkdir(parents=True, exist_ok=True)
+    target_user_config.write_text(version_header + content)
+
+
+def get_config_version(config_file: Path) -> str | None:
+    if not config_file.exists():
+        return None
+    try:
+        with open(config_file, 'r') as f:
+            data = yaml.safe_load(f)
+            if isinstance(data, list):
+                for item in data:
+                    if isinstance(item, dict) and 'version' in item:
+                        return str(item['version'])
+    except Exception:
+        pass
+    return None
+
+
+def is_version_ahead(repo_v: str, user_v: str | None) -> bool:
+    if not user_v:
+        return True
+    try:
+        from packaging.version import parse as parse_version
+        return parse_version(str(repo_v)) > parse_version(str(user_v))
+    except ImportError:
+        import re
+        def parse_simple(v_str):
+            return [int(x) for x in re.findall(r'\d+', str(v_str))]
+        return parse_simple(repo_v) > parse_simple(user_v)
 
 
 class StretchSystemTray:
@@ -59,20 +117,30 @@ class StretchSystemTray:
             user_config_dir = Path(fleet_path) / fleet_id
             self.user_config_file = user_config_dir / "stretch_tray.yaml"
 
-            # Initialize user config if it doesn't exist
+            if stretch_version == StretchVersion.stretch_4:
+                default_config = self.script_dir / "stretch_4_scripts.yaml"
+            elif stretch_version == StretchVersion.stretch_3:
+                default_config = self.script_dir / "stretch_3_scripts.yaml"
+            else:
+                raise NotImplementedError(f"Unsupported stretch version: {stretch_version}")
+
+            # Check version differences and trigger factory reset if package version is ahead
+            if self.user_config_file.exists():
+                pkg_version = get_package_version()
+                user_version = get_config_version(self.user_config_file)
+
+                if is_version_ahead(pkg_version, user_version):
+                    self.logger.info(
+                        f"Package CalVer version ({pkg_version}) is ahead of user config version ({user_version}). "
+                        "Invoking factory reset..."
+                    )
+                    from stretch4_tray.cli import factory_reset
+                    factory_reset(restart_daemon=False)
+
+            # Initialize user config if it doesn't exist (or was moved by factory reset)
             if not self.user_config_file.exists():
                 try:
-                    user_config_dir.mkdir(parents=True, exist_ok=True)
-                    
-                    if stretch_version == StretchVersion.stretch_4:
-                        default_config = self.script_dir / "stretch_4_scripts.yaml"
-                    elif stretch_version == StretchVersion.stretch_3:
-                        default_config = self.script_dir / "stretch_3_scripts.yaml"
-                    else:
-                        raise NotImplementedError(f"Unsupported stretch version: {stretch_version}")
-                    
-                    import shutil
-                    shutil.copy(default_config, self.user_config_file)
+                    create_user_config_file(default_config, self.user_config_file)
                     self.logger.info(f"Initialized user-editable config at {self.user_config_file}")
                 except Exception as e:
                     self.logger.error(f"Failed to initialize user config: {e}")
