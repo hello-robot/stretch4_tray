@@ -8,6 +8,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 USER_NAME="$(whoami)"
 USER_HOME="$HOME"
+USER_SYSTEMD_DIR="$USER_HOME/.config/systemd/user"
 
 
 # Detect Python path (prefer environment, then venv, then system)
@@ -57,7 +58,10 @@ generate_service() {
         echo "Note: $REPO_ROOT does not look like a repository. Setting WorkingDirectory to $WORKING_DIR"
     fi
 
-    cat > "$SCRIPT_DIR/stretch_tray.service" << EOF
+    # Write directly to the systemd dir; writing into the package dir leaves
+    # an untracked file behind after pip uninstall, which turns the leftover
+    # directory into a namespace package that shadows later installs.
+    cat > "$USER_SYSTEMD_DIR/stretch_tray.service" << EOF
 [Unit]
 Description=Stretch Tray System Monitor
 After=graphical-session.target
@@ -86,17 +90,12 @@ EOF
 install_service() {
     echo "Installing Stretch Tray systemd user service..."
 
-    # Generate service file with current paths
-    echo "Generating service file..."
-    generate_service
-
     # Create user systemd directory if it doesn't exist
-    USER_SYSTEMD_DIR="$USER_HOME/.config/systemd/user"
     mkdir -p "$USER_SYSTEMD_DIR"
 
-    # Copy service file to user systemd directory
-    echo "Copying service file to $USER_SYSTEMD_DIR/..."
-    cp "$SCRIPT_DIR/stretch_tray.service" "$USER_SYSTEMD_DIR/"
+    # Generate service file with current paths
+    echo "Generating service file in $USER_SYSTEMD_DIR/..."
+    generate_service
 
     # Reload systemd user daemon
     echo "Reloading systemd user daemon..."
@@ -129,7 +128,6 @@ uninstall_service() {
     systemctl --user disable stretch_tray.service 2>/dev/null || true
 
     # Remove service file from user directory
-    USER_SYSTEMD_DIR="$USER_HOME/.config/systemd/user"
     echo "Removing service file from $USER_SYSTEMD_DIR/..."
     rm -f "$USER_SYSTEMD_DIR/stretch_tray.service"
 
