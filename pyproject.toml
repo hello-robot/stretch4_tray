@@ -1,7 +1,7 @@
 [project]
 name = "hello-robot-stretch4-tray"
 # Versioning follow CalVer (YYYY.MM.DD) for PEP 440 compliance
-version = "2026.07.08"
+version = "2026.10.20"
 description = "Ubuntu system tray for displaying battery level and providing a system tray menu for launching Stretch tools or help resources."
 readme = "README.md"
 authors = [
