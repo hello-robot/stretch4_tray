@@ -2,6 +2,7 @@
 from dataclasses import asdict
 import os
 import shlex
+import sys
 import threading
 import subprocess
 import logging
@@ -552,6 +553,8 @@ def main():
     except Exception as e:
         print(f"Error: {e}")
         logging.error(f"Unhandled exception: {e}")
+        # Exit non-zero so systemd records the failure and its start limit applies
+        sys.exit(1)
 
 
 if __name__ == "__main__":

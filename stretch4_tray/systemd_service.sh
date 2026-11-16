@@ -32,12 +32,30 @@ else
     ROS_SETUP=$(ls -1 /opt/ros/*/setup.bash 2>/dev/null | head -n 1) || true
 fi
 
+# Validate HELLO_FLEET_ID: the tray reads its config from $HELLO_FLEET_PATH/$HELLO_FLEET_ID,
+# so a wrong ID (e.g. the hostname instead of the fleet ID) makes the service fail on every start.
+validate_fleet_id() {
+    if [ -z "$HELLO_FLEET_ID" ]; then
+        echo "Error: HELLO_FLEET_ID is not set. Set it to this robot's fleet ID (e.g. stretch-se4-XXXX) and re-run."
+        exit 1
+    fi
+    if [ ! -d "$HELLO_FLEET_PATH/$HELLO_FLEET_ID" ]; then
+        echo "Error: $HELLO_FLEET_PATH/$HELLO_FLEET_ID does not exist."
+        echo "HELLO_FLEET_ID ($HELLO_FLEET_ID) must match a robot folder in $HELLO_FLEET_PATH:"
+        for d in "$HELLO_FLEET_PATH"/stretch-*/; do
+            [ -d "$d" ] && echo "  $(basename "$d")"
+        done
+        exit 1
+    fi
+}
+
 echo "Detected configuration:"
 echo "  Repository root: $REPO_ROOT"
 echo "  Script directory: $SCRIPT_DIR"
 echo "  User: $USER_NAME"
 echo "  Python: $PYTHON_PATH"
 echo "  HELLO_FLEET_PATH: $HELLO_FLEET_PATH"
+echo "  HELLO_FLEET_ID: $HELLO_FLEET_ID"
 echo "  ROS Setup: $ROS_SETUP"
 echo ""
 
@@ -62,6 +80,10 @@ generate_service() {
 Description=Stretch Tray System Monitor
 After=graphical-session.target
 Wants=graphical-session.target
+# Give up after 5 failed starts within 10 minutes instead of restarting forever.
+# (With RestartSec=10 the systemd default of 5 starts per 10s is never reached.)
+StartLimitIntervalSec=600
+StartLimitBurst=5
 
 [Service]
 Type=simple
@@ -85,6 +107,7 @@ EOF
 # Function to install service
 install_service() {
     echo "Installing Stretch Tray systemd user service..."
+    validate_fleet_id
 
     # Generate service file with current paths
     echo "Generating service file..."
