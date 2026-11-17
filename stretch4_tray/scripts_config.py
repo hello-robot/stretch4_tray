@@ -16,7 +16,7 @@ class ScriptsConfig:
     """Command to execute in a subprocess. This can be a normal cli command run on Stretch"""
 
     open_terminal: bool
-    """If true, a gnome-terminal will be opened and the command will be run in it. Otherwise, the command will be run in the background and the result returned to the user."""
+    """If true, a terminal (terminator if available, else gnome-terminal, etc.) will be opened and the command will be run in it. Otherwise, the command will be run in the background and the result returned to the user."""
 
 
     separator_after: bool

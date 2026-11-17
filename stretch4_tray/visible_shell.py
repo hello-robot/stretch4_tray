@@ -24,7 +24,7 @@ class VisibleShell:
     def execute_command(self, command: str, cwd: str|None, process_logger:logging.Logger) -> ExecutionResult:
         """Execute a command in a visible terminal."""
         try:
-            # Use gnome-terminal or xterm to open a visible shell
+            # Use terminator, gnome-terminal, or xterm to open a visible shell
             terminal_cmd = self._get_terminal_command(command, cwd)
 
             if not terminal_cmd:
@@ -76,6 +76,8 @@ class VisibleShell:
 
         # Try different terminal emulators
         terminal_options = [
+            # --no-dbus so an already-running terminator doesn't spawn the window with its own environment
+            ['terminator', '--no-dbus', '-x', 'bash', '-c', shell_cmd],
             ['gnome-terminal', '--', 'bash', '-c', shell_cmd],
             ['xterm', '-e', 'bash', '-c', shell_cmd],
             ['konsole', '-e', 'bash', '-c', shell_cmd],
